@@ -51,37 +51,38 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials): Promise<User | null> {
         try {
           await connectDB()
-          
+    
           const user = await DbUser.findOne({ email: credentials?.email })
           console.log('User found:', !!user) // Log if user exists
-          
+    
           if (!user) throw new Error('Invalid credentials')
-      
+
           const isValid = await bcrypt.compare(credentials?.password || '', user.password)
           console.log('Password valid:', isValid) // Log password validation result
 
-          let signedImageUrl = null
+          let signedImageUrl: string | null = null
           if (user.profileImage) {
             const key = user.profileImage.split('/').pop()
-            const command = new GetObjectCommand({
-              Bucket: awsConfig.bucketName,
-              Key: `profile-images/${key}`
-            })
-            signedImageUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+            if (key) {
+              const command = new GetObjectCommand({
+                Bucket: awsConfig.bucketName,
+                Key: `profile-images/${key}`
+              })
+              signedImageUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+            }
           }
 
           return {
             id: user._id.toString(),
             email: user.email,
             name: user.name,
-            image: signedImageUrl,
+            image: signedImageUrl, // Now correctly typed as string | null
             role: user.role
           }
         } catch (error) {
           return null
         }
-      }
-    })
+      }    })
   ],
   callbacks: {
     async jwt({ token, user }) {

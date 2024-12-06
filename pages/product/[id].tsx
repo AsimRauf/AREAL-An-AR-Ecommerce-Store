@@ -73,10 +73,11 @@ export default function ProductViewer() {
   }
 
   const handleARView = () => {
-    const timestamp = Date.now()
-    window.open(`/product/ar-viewer?model=${encodeURIComponent(product.glbModel)}&t=${timestamp}`, '_blank')
+    if (product && product.glbModel) {
+      const timestamp = Date.now()
+      window.open(`/product/ar-viewer?model=${encodeURIComponent(product.glbModel)}&t=${timestamp}`, '_blank')
+    }
   }
-
   if (!product) return <div>Loading...</div>
 
   return (

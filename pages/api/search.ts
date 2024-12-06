@@ -8,10 +8,9 @@ const generateSignedUrl = (key: string) => {
     url: `${process.env.CLOUDFRONT_URL}/${key}`,
     keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
     privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   })
 }
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' })

@@ -9,7 +9,7 @@ const generateSignedUrl = (key: string) => {
     url: `${process.env.CLOUDFRONT_URL}/${key}`,
     keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
     privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   })
 }
 
@@ -80,11 +80,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     res.status(500).json({
       success: false,
       message: 'Error fetching category products',
-      error: error.message
+      error: error instanceof Error ? error.message : String(error)
     })
   }
 }

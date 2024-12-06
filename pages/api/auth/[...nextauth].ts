@@ -73,7 +73,7 @@ export const authOptions: NextAuthOptions = {
             id: user._id.toString(),
             email: user.email,
             name: user.name,
-            image: signedImageUrl || undefined,  // Convert null to undefined if no image
+            image: signedImageUrl || null,  // Convert null to undefined if no image
             role: user.role
           }
         } catch (error) {

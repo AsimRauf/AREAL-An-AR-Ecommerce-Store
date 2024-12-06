@@ -33,50 +33,55 @@ type DraggableImageProps = {
 }
 
 const DraggableImage = ({ src, index, moveImage, onRemove }: DraggableImageProps) => {
-    const [{ isDragging }, drag] = useDrag({
-        type: 'IMAGE',
-        item: { index },
-        collect: (monitor) => ({
-            isDragging: monitor.isDragging()
-        })
+    const [{ isDragging }, dragRef] = useDrag({
+      type: 'IMAGE',
+      item: { index },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging()
+      })
     })
 
-    const [, drop] = useDrop({
-        accept: 'IMAGE',
-        hover: (item: { index: number }) => {
-            if (item.index !== index) {
-                moveImage(item.index, index)
-                item.index = index
-            }
+    const [, dropRef] = useDrop({
+      accept: 'IMAGE',
+      hover: (item: { index: number }) => {
+        if (item.index !== index) {
+          moveImage(item.index, index)
+          item.index = index
         }
+      }
     })
+
+    // Combine the refs
+    const ref = (node: HTMLDivElement | null) => {
+      dragRef(node)
+      dropRef(node)
+    }
 
     return (
-        <div
-            ref={(node) => drag(drop(node))}
-            className={`relative group ${isDragging ? 'opacity-50' : ''}`}
+      <div
+        ref={ref}
+        className={`relative group ${isDragging ? 'opacity-50' : ''}`}
+      >
+        <img
+          src={src}
+          alt={`Preview ${index + 1}`}
+          className="h-24 w-24 object-cover rounded-lg cursor-move"
+        />
+        <button
+          onClick={onRemove}
+          className="absolute top-1 right-1 bg-red-500 rounded-full p-1 
+           opacity-0 group-hover:opacity-100 transition-opacity"
         >
-            <img
-                src={src}
-                alt={`Preview ${index + 1}`}
-                className="h-24 w-24 object-cover rounded-lg cursor-move"
-            />
-            <button
-                onClick={onRemove}
-                className="absolute top-1 right-1 bg-red-500 rounded-full p-1 
-                 opacity-0 group-hover:opacity-100 transition-opacity"
-            >
-                <FiX className="text-white w-4 h-4" />
-            </button>
-            {index === 0 && (
-                <span className="absolute bottom-1 left-1 bg-indigo-600 text-white text-xs px-2 py-1 rounded">
-                    Default
-                </span>
-            )}
-        </div>
+          <FiX className="text-white w-4 h-4" />
+        </button>
+        {index === 0 && (
+          <span className="absolute bottom-1 left-1 bg-indigo-600 text-white text-xs px-2 py-1 rounded">
+            Default
+          </span>
+        )}
+      </div>
     )
 }
-
 export default function ProductUpload() {
     const [loading, setLoading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState({
@@ -170,6 +175,10 @@ export default function ProductUpload() {
                 },
                 body: formData
             })
+
+            if (!response.body) {
+                throw new Error('Response body is null')
+            }
 
             const reader = response.body.getReader()
             const decoder = new TextDecoder()
@@ -290,7 +299,7 @@ export default function ProductUpload() {
                                             <option value="Tools & Hardware">Tools & Hardware</option>
                                             <option value="Other">Other</option>
                                         </select>
-                                        {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category.message}</p>}
+                                        {errors.category && <p className="mt-1 text-sm text-red-500">{errors.category.message as string}</p>}
                                     </div>
                                 </div>
 

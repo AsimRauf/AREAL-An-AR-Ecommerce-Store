@@ -13,22 +13,22 @@ declare module 'next-auth' {
     user: {
       id: string
       role: string
-      image: string
+      image: string | null
     } & DefaultSession['user']
   }
 
   interface User extends DefaultUser {
     id: string
     role: string
-    image?: string | null  // Make image optional and allow null
+    image: string | null
   }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
-    id?: string
-    role?: string
-    image?: string | null
+    id: string
+    role: string
+    image: string | null
   }
 }
 
@@ -86,15 +86,15 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id
         token.role = user.role
-        token.image = user.image || null // Convert undefined to null
+        token.image = user.image
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string
-        session.user.role = token.role as string
-        session.user.image = token.image || null
+        session.user.id = token.id
+        session.user.role = token.role
+        session.user.image = token.image
       }
       return session
     }

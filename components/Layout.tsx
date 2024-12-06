@@ -1,4 +1,4 @@
-import { useSidebar } from '@/context/SidebarContext'
+import { useSidebar } from '../context/SidebarContext'
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const { showDesktopSidebar } = useSidebar()

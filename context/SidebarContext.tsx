@@ -7,12 +7,7 @@ interface SidebarContextType {
   toggleDesktopSidebar: () => void
 }
 
-const SidebarContext = createContext<SidebarContextType>({
-  showMobileSidebar: false,
-  showDesktopSidebar: true,
-  toggleMobileSidebar: () => {},
-  toggleDesktopSidebar: () => {},
-})
+const SidebarContext = createContext<SidebarContextType | undefined>(undefined)
 
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const [showMobileSidebar, setShowMobileSidebar] = useState(false)
@@ -22,15 +17,21 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const toggleDesktopSidebar = () => setShowDesktopSidebar(prev => !prev)
 
   return (
-    <SidebarContext.Provider value={{ 
-      showMobileSidebar, 
-      showDesktopSidebar, 
-      toggleMobileSidebar, 
-      toggleDesktopSidebar 
+    <SidebarContext.Provider value={{
+      showMobileSidebar,
+      showDesktopSidebar,
+      toggleMobileSidebar,
+      toggleDesktopSidebar
     }}>
       {children}
     </SidebarContext.Provider>
   )
 }
 
-export const useSidebar = () => useContext(SidebarContext)
+export function useSidebar() {
+  const context = useContext(SidebarContext)
+  if (context === undefined) {
+    throw new Error('useSidebar must be used within a SidebarProvider')
+  }
+  return context
+}

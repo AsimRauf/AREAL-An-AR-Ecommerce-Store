@@ -4,9 +4,10 @@ frontend:
     preBuild:
       commands:
         - npm install
+        # Environment mappings here
     build:
       commands:
-        - npm run build
+        - npm run build || exit 1
   artifacts:
     baseDirectory: .next
     files:

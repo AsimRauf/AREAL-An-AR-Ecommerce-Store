@@ -21,7 +21,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await connectDB()
     const { q } = req.query
 
-    let products = await Product.find({
+    const products = await Product.find({
       $or: [
         { name: { $regex: q, $options: 'i' } },
         { description: { $regex: q, $options: 'i' } },

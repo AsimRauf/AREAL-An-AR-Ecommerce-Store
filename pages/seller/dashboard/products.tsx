@@ -435,7 +435,9 @@ export default function SellerProducts() {
                         const refreshUrl = async () => {
                           const response = await fetch(`/api/seller/products/refresh-url?key=${product.images[0]}`)
                           const { url } = await response.json()
-                          e.target.src = url
+                          if (e.target instanceof HTMLImageElement) {
+                            e.target.src = url
+                          }
                         }
                         refreshUrl()
                       }}

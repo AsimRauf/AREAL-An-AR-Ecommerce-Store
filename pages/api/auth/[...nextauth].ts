@@ -20,7 +20,7 @@ declare module 'next-auth' {
   interface User extends DefaultUser {
     id: string
     role: string
-    image: string
+    image?: string | null  // Make image optional and allow null
   }
 }
 
@@ -51,14 +51,11 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials): Promise<User | null> {
         try {
           await connectDB()
-    
           const user = await DbUser.findOne({ email: credentials?.email })
-          console.log('User found:', !!user) // Log if user exists
-    
           if (!user) throw new Error('Invalid credentials')
 
           const isValid = await bcrypt.compare(credentials?.password || '', user.password)
-          console.log('Password valid:', isValid) // Log password validation result
+          if (!isValid) throw new Error('Invalid credentials')
 
           let signedImageUrl: string | null = null
           if (user.profileImage) {
@@ -76,7 +73,7 @@ export const authOptions: NextAuthOptions = {
             id: user._id.toString(),
             email: user.email,
             name: user.name,
-            image: signedImageUrl, // Now correctly typed as string | null
+            image: signedImageUrl || undefined,  // Convert null to undefined if no image
             role: user.role
           }
         } catch (error) {

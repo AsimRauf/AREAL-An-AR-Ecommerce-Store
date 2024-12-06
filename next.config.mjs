@@ -6,10 +6,10 @@ const nextConfig = {
     domains: ['d3s4gao37ngkzb.cloudfront.net']
   },
   eslint: {
-    ignoreDuringBuilds: true // Temporarily ignore ESLint during build
+    ignoreDuringBuilds: true
   },
   typescript: {
-    ignoreBuildErrors: true // Temporarily ignore TypeScript errors during build
+    ignoreBuildErrors: true
   }
 }
 

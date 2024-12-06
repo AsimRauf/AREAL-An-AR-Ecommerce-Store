@@ -170,7 +170,7 @@ export default function SellerSignup() {
                   placeholder="Full Name"
                   className="w-full pl-10 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.name && <p className="mt-1 text-red-400 text-sm">{errors.name.message}</p>}
+                {errors.name && <p className="mt-1 text-red-400 text-sm">{errors.name.message as string}</p>}
               </div>
 
               <div className="relative group">
@@ -181,7 +181,7 @@ export default function SellerSignup() {
                   placeholder="Email Address"
                   className="w-full pl-10 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.email && <p className="mt-1 text-red-400 text-sm">{errors.email.message}</p>}
+                {errors.email && <p className="mt-1 text-red-400 text-sm">{errors.email.message as string}</p>}
               </div>
 
               <div className="relative group">
@@ -192,7 +192,7 @@ export default function SellerSignup() {
                   placeholder="Password"
                   className="w-full pl-10 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.password && <p className="mt-1 text-red-400 text-sm">{errors.password.message}</p>}
+                {errors.password && <p className="mt-1 text-red-400 text-sm">{errors.password.message as string}</p>}
               </div>
 
               <div className="relative group">
@@ -202,7 +202,7 @@ export default function SellerSignup() {
                   placeholder="Phone Number"
                   className="w-full pl-10 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.phoneNumber && <p className="mt-1 text-red-400 text-sm">{errors.phoneNumber.message}</p>}
+                {errors.phoneNumber && <p className="mt-1 text-red-400 text-sm">{errors.phoneNumber.message as string}</p>}
               </div>
 
               {/* Business Information */}
@@ -213,7 +213,7 @@ export default function SellerSignup() {
                   placeholder="Business Name"
                   className="w-full pl-10 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.businessName && <p className="mt-1 text-red-400 text-sm">{errors.businessName.message}</p>}
+                {errors.businessName && <p className="mt-1 text-red-400 text-sm">{errors.businessName.message as string}</p>}
               </div>
 
               <div className="relative group">
@@ -223,7 +223,7 @@ export default function SellerSignup() {
                   placeholder="Business Address"
                   className="w-full pl-10 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.businessAddress && <p className="mt-1 text-red-400 text-sm">{errors.businessAddress.message}</p>}
+                {errors.businessAddress && <p className="mt-1 text-red-400 text-sm">{errors.businessAddress.message as string}</p>}
               </div>
 
               <div className="relative group">
@@ -236,7 +236,7 @@ export default function SellerSignup() {
                   <option value="Company" className="bg-gray-900">Company</option>
                   <option value="Partnership" className="bg-gray-900">Partnership</option>
                 </select>
-                {errors.businessType && <p className="mt-1 text-red-400 text-sm">{errors.businessType.message}</p>}
+                {errors.businessType && <p className="mt-1 text-red-400 text-sm">{errors.businessType.message as string}</p>}
               </div>
 
               <div className="relative group">
@@ -252,7 +252,7 @@ export default function SellerSignup() {
                   <option value="Beauty" className="bg-gray-900">Beauty</option>
                   <option value="Other" className="bg-gray-900">Other</option>
                 </select>
-                {errors.category && <p className="mt-1 text-red-400 text-sm">{errors.category.message}</p>}
+                {errors.category && <p className="mt-1 text-red-400 text-sm">{errors.category.message as string}</p>}
               </div>
 
               <div className="col-span-2">
@@ -262,7 +262,7 @@ export default function SellerSignup() {
                   rows={4}
                   className="w-full pl-4 pr-4 py-3 bg-white/10 border border-indigo-300/30 rounded-lg text-white placeholder-indigo-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 transition-all"
                 />
-                {errors.storeDescription && <p className="mt-1 text-red-400 text-sm">{errors.storeDescription.message}</p>}
+                {errors.storeDescription && <p className="mt-1 text-red-400 text-sm">{errors.storeDescription.message as string}</p>}
               </div>
 
               <div className="col-span-2">
@@ -274,7 +274,7 @@ export default function SellerSignup() {
                   />
                   <span className="text-white">I accept the terms and conditions</span>
                 </label>
-                {errors.acceptTerms && <p className="mt-1 text-red-400 text-sm">{errors.acceptTerms.message}</p>}
+                {errors.acceptTerms && <p className="mt-1 text-red-400 text-sm">{errors.acceptTerms.message as string}</p>}
               </div>
 
               <button

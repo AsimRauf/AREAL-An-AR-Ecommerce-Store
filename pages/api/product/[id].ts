@@ -2,8 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../../config/db'
 import { Product } from '../../../models/Product'
 import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
-import { Seller } from '@/models/Seller'
-
+import { Seller } from '../../../models/Seller'
 const generateSignedUrl = (key: string) => {
   return getSignedUrl({
     url: `${process.env.CLOUDFRONT_URL}/${key}`,

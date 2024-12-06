@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { FiChevronLeft } from 'react-icons/fi'
 import { useRouter } from 'next/router'
-import { useSidebar } from '@/context/SidebarContext'
+import { useSidebar } from '../context/SidebarContext'
 
 export default function Sidebar({ isMobile }: { isMobile: boolean }) {
     const { showMobileSidebar, showDesktopSidebar, toggleMobileSidebar, toggleDesktopSidebar } = useSidebar()

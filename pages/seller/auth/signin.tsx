@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useForm } from 'react-hook-form'
+import { useForm, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FiMail, FiLock } from 'react-icons/fi'
@@ -30,11 +30,11 @@ export default function SellerSignin() {
     }
   }, [])
 
-  const { register, handleSubmit, formState: { errors } } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm<SigninFormData>({
     resolver: zodResolver(signinSchema)
   })
 
-  const onSubmit = async (data: SigninFormData) => {
+  const onSubmit: SubmitHandler<SigninFormData> = async (data) => {
     setLoading(true)
     try {
       const response = await fetch('/api/seller/auth/signin', {

@@ -4,14 +4,14 @@ import { Product } from '../../../models/Product'
 import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
 import { Seller } from '../../../models/Seller'
 const generateSignedUrl = (key: string) => {
+  const date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   return getSignedUrl({
     url: `${process.env.CLOUDFRONT_URL}/${key}`,
     keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
     privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    dateLessThan: date.toISOString() // Convert Date to ISO string
   })
 }
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     await connectDB()
@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         model: Seller,
         select: 'name businessName profileImage'
       })
-      .lean()
+      .lean() as any
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
@@ -32,7 +32,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const sellerImageKey = product.seller?.profileImage?.replace('https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', '')
 
     const [productImages, sellerImage] = await Promise.all([
-      Promise.all(product.images.map(key => generateSignedUrl(key))),
+      Promise.all((product.images || []).map((key: string) => generateSignedUrl(key))),
       sellerImageKey ? generateSignedUrl(sellerImageKey) : null
     ])
 
@@ -47,7 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     res.status(200).json(productWithUrls)
-  } catch (error) {
+  } catch (error: any) {
     res.status(500).json({ 
       success: false, 
       message: 'Error processing product',

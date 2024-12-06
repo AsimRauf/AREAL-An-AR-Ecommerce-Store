@@ -4,6 +4,8 @@ import Link from 'next/link'
 import { signIn } from 'next-auth/react'
 import { z } from 'zod'
 import { toast } from 'react-hot-toast'
+import AuthLayout from '../../components/layouts/AuthLayout'
+
 
 
 const signinSchema = z.object({
@@ -129,3 +131,4 @@ export default function SignIn() {
 SignIn.getLayout = (page: React.ReactElement) => (
   <AuthLayout>{page}</AuthLayout>
 )
+

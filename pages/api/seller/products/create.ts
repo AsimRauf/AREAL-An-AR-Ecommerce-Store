@@ -33,7 +33,7 @@ const generateSafeKey = (sellerId: string, originalFilename: string, index?: num
 }
 
 const generateSignedUrl = (key: string) => {
-  const dateLessThan = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  const dateLessThan = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
   return getSignedUrl({
     url: `${process.env.CLOUDFRONT_URL}/${key}`,
     keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
@@ -41,7 +41,6 @@ const generateSignedUrl = (key: string) => {
     dateLessThan
   })
 }
-
 const uploadToS3 = async (file: formidable.File, sellerId: string, contentType: string, index?: number) => {
   const fileContent = fs.readFileSync(file.filepath)
   const key = generateSafeKey(sellerId, file.originalFilename, index)
@@ -126,8 +125,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     sendProgress('Product creation completed!', 100)
     res.status(201).json(productWithUrls)
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Product creation error:', error)
-    res.status(500).json({ message: 'Error creating product', error: error.message })
+    if (error instanceof Error) {
+      res.status(500).json({ message: 'Error creating product', error: error.message })
+    } else {
+      res.status(500).json({ message: 'Error creating product', error: 'An unknown error occurred' })
+    }
   }
 }

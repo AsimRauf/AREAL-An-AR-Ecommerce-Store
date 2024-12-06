@@ -6,7 +6,7 @@ import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
 
 const generateSignedUrl = (key: string) => {
   // Set expiration to 7 days for better caching
-  const dateLessThan = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+  const dateLessThan = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
 
   const encodedKey = key.split('/').map(part => 
     part.endsWith('.png') ? encodeURIComponent(part) : part
@@ -19,7 +19,6 @@ const generateSignedUrl = (key: string) => {
     dateLessThan
   })
 }
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     const sellerId = await verifySellerToken(req)

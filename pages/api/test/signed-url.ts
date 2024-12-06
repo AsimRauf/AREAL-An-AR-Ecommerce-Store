@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       url: `${process.env.CLOUDFRONT_URL}/${imageKey}`,
       keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
       privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-      dateLessThan: new Date(Date.now() + 60 * 60 * 1000)
+      dateLessThan: new Date(Date.now() + 60 * 60 * 1000).toISOString()
     })
 
     res.status(200).json({ signedUrl })

@@ -27,7 +27,7 @@ const generateSignedUrl = (key: string) => {
     url: `${process.env.CLOUDFRONT_URL}/${key}`,
     keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
     privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: new Date(Date.now() + 3600 * 1000)
+    dateLessThan: new Date(Date.now() + 3600 * 1000).toISOString()
   })
 }
 

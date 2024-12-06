@@ -7,9 +7,9 @@ import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { createContext, useState, useEffect } from 'react'
 import Cart from '../components/Cart'
-import Sidebar from '@/components/Sidebar'
-import { SidebarProvider } from '@/context/SidebarContext'
-import { useSidebar } from '@/context/SidebarContext'
+import Sidebar from '../components/Sidebar'
+import { SidebarProvider } from '../context/SidebarContext'
+import { useSidebar } from '../context/SidebarContext'
 
 interface CartItem {
   _id: string

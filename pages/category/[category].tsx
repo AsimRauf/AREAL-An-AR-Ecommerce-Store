@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import ProductCard from '@/components/ProductCard'
+import ProductCard from '../../components/ProductCard'
 import { FiFilter, FiChevronDown } from 'react-icons/fi'
 
 export default function CategoryProducts() {

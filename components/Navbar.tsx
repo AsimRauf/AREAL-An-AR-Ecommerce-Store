@@ -3,7 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { useState, useContext, useEffect } from 'react'
 import { CartContext } from '../pages/_app'
-import { useSidebar } from '@/context/SidebarContext'
+import { useSidebar } from '../context/SidebarContext'
 import { FiMenu, FiSearch, FiX, FiHeart, FiShoppingCart, FiUser } from 'react-icons/fi'
 
 

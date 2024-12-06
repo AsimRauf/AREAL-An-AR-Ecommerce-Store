@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
-import ProductGrid from '@/components/ProductGrid'
+import ProductGrid from '../components/ProductGrid'
 
 interface Product {
   _id: string

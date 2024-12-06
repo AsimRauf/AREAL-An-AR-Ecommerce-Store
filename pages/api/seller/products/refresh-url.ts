@@ -1,7 +1,7 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-    try {
+export default async function handler(req: NextApiRequest, res: NextApiResponse) {    try {
       const fullUrl = req.query.key as string
       const key = fullUrl.includes('/products/') ? 
         fullUrl.split('/products/')[1].split('?')[0] :

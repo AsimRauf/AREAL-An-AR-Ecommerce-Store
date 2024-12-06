@@ -10,17 +10,9 @@ const nextConfig = {
       'fakestoreapi.com',
       'images.unsplash.com',
       'd3s4gao37ngkzb.cloudfront.net'
-    ],
-    formats: ['image/webp'],
+    ]
   },
-  experimental: {
-    turbo: {
-      enabled: true,
-      resolveAlias: {
-        '@/*': './*'
-      }
-    }
-  }
+  output: 'standalone'
 }
 
-module.exports = nextConfig  
+module.exports = nextConfig

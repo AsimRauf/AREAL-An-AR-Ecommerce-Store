@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return res.status(401).json({ message: 'Invalid credentials' })
     }
 
-    let signedImageUrl = null
+    let signedImageUrl: string | null = null
     if (seller.profileImage) {
       const key = seller.profileImage.split('/').pop()
       const command = new GetObjectCommand({

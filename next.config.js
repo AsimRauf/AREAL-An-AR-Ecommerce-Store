@@ -6,9 +6,12 @@ const nextConfig = {
     domains: ['d3s4gao37ngkzb.cloudfront.net']
   },
   webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      '@': '.',
+    config.resolve = {
+      ...config.resolve,
+      alias: {
+        ...config.resolve.alias,
+        '@': '.'
+      }
     }
     return config
   }

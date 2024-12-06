@@ -1,17 +1,10 @@
 {
-  "extends": [
-    "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "extends": "next",
   "rules": {
-    "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unused-vars": "warn",
     "react-hooks/exhaustive-deps": "warn",
     "@next/next/no-img-element": "warn",
     "@next/next/no-sync-scripts": "warn",
-    "react/no-unescaped-entities": "off",
     "react/jsx-no-undef": "error"
   }
 }

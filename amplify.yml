@@ -3,19 +3,19 @@ frontend:
   phases:
     preBuild:
       commands:
-        - echo "Node version: $(node -v)"
-        - echo "NPM version: $(npm -v)"
-        - rm -rf node_modules package-lock.json
-        - npm cache clean --force
-        - npm install
-        - echo "Checking installed packages:"
-        - npm list tailwindcss postcss-import @tailwindcss/forms
+        - "echo \"Node version $(node -v)\""
+        - "echo \"NPM version $(npm -v)\""
+        - "rm -rf node_modules package-lock.json"
+        - "npm cache clean --force"
+        - "npm install"
+        - "echo \"Checking installed packages\""
+        - "npm list tailwindcss postcss-import @tailwindcss/forms"
     build:
       commands:
-        - echo "Starting build process..."
-        - NODE_ENV=production npm run build
-        - echo "Build completed"
+        - "echo \"Starting build process\""
+        - "NODE_ENV=production npm run build"
+        - "echo \"Build completed\""
   artifacts:
     baseDirectory: .next
     files:
-      - '**/*'
+      - "**/*"

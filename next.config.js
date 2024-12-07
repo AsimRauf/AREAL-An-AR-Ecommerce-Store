@@ -1,22 +1,20 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'standalone',
-  reactStrictMode: true,
   images: {
-    domains: ['d3s4gao37ngkzb.cloudfront.net',
-      'main.d1e1nwvnufs9wc.amplifyapp.com'
-    ]
+    domains: ['d3s4gao37ngkzb.cloudfront.net'],
+    unoptimized: true
   },
-  webpack: (config) => {
-    config.resolve = {
-      ...config.resolve,
-      alias: {
-        ...config.resolve.alias,
-        '@': '.'
-      }
-    }
-    return config
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Access-Control-Allow-Origin', value: '*' },
+          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,OPTIONS' },
+        ],
+      },
+    ]
   }
 }
-
 module.exports = nextConfig

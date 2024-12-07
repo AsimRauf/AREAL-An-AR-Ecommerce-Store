@@ -2,25 +2,8 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../config/db'
 import { Product } from '../../models/Product'
 import { Seller } from '../../models/Seller'
-import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
-import { formatPrivateKey } from '../../utils/cloudfront'
+import { generateSignedUrl } from '../../utils/cloudfront'
 
-const generateSignedUrl = (key: string) => {
-  try {
-    const formattedKey = formatPrivateKey(process.env.CLOUDFRONT_PRIVATE_KEY!)
-    console.log('Formatted key first line:', formattedKey.split('\n')[1]); // Debug log
-
-    return getSignedUrl({
-      url: `${process.env.CLOUDFRONT_URL}/${key}`,
-      keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
-      privateKey: formattedKey,
-      dateLessThan: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
-    })
-  } catch (error) {
-    console.error('URL signing error:', error)
-    return null
-  }
-}
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
@@ -32,32 +15,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await connectDB()
     
-    // Limit fields and batch size
+    // Fetch products with essential fields
     const products = await Product.find()
       .populate({
         path: 'seller',
         model: Seller,
-        select: 'businessName profileImage' // Reduced fields
+        select: 'businessName profileImage'
       })
-      .select('name price badges images seller') // Only essential fields
+      .select('name price badges images seller')
       .sort({ createdAt: -1 })
-      .limit(12) // Reduced initial load
+      .limit(12)
       .lean()
-      .batchSize(5) // Optimize memory usage
 
-    // Pre-generate CloudFront URL base
-    const cloudfrontBase = `${process.env.CLOUDFRONT_URL}/`
-    const expiryDate = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-    
-    // Parallel processing of URLs
+    // Generate signed URLs in parallel
     const productsWithSignedUrls = await Promise.all(products.map(async product => {
-      const sellerImageKey = product.seller?.profileImage?.replace('https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', '')
-      
-      // Generate URLs in parallel
-      const [productImages, sellerImage] = await Promise.all([
-        Promise.all(product.images.slice(0, 1).map(key => generateSignedUrl(key))), // Only first image initially
-        sellerImageKey ? generateSignedUrl(sellerImageKey) : null
-      ])
+      // Process product images
+      const productImages = await Promise.all(
+        product.images.slice(0, 1).map(key => generateSignedUrl(key))
+      )
+
+      // Process seller image if exists
+      const sellerImage = product.seller?.profileImage ? 
+        await generateSignedUrl(product.seller.profileImage) : null
 
       return {
         ...product,
@@ -71,7 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     res.status(200).json(productsWithSignedUrls)
 
-  } catch (error: unknown) {
+  } catch (error) {
+    console.error('Products API Error:', error)
     res.status(500).json({
       success: false,
       message: 'Error fetching products',

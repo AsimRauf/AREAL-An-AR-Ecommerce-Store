@@ -7,8 +7,8 @@ frontend:
     preBuild:
       commands:
         - npm install
-        - npm install -D cross-env
-        - npm install -D tailwindcss postcss-import postcss autoprefixer @tailwindcss/forms
+        - npm install cross-env
+        - npm install tailwindcss postcss-import postcss autoprefixer @tailwindcss/forms
     build:
       commands:
         - export AWS_ACCESS_KEY_ID="${AACCESS_KEY_ID}"

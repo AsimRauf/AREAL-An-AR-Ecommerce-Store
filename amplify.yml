@@ -6,24 +6,19 @@ frontend:
         - npm ci
     build:
       commands:
-        # AWS Credentials
-        - AWS_ACCESS_KEY_ID=${AACCESS_KEY_ID}
-        - AWS_SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}
-        - AWS_REGION=${REGION}
-        - AWS_BUCKET_NAME=${BUCKET_NAME}
-        # MongoDB
-        - MONGODB_PASSWORD=${MONGODB_PASSWORD}
-        - export MONGODB_PASSWORD=${MONGODB_PASSWORD}
+        - |
+          export AWS_ACCESS_KEY_ID="${AACCESS_KEY_ID}"
+          export AWS_SECRET_ACCESS_KEY="${SECRET_ACCESS_KEY}"
+          export AWS_REGION="${REGION}"
+          export AWS_BUCKET_NAME="${BUCKET_NAME}"
+          export MONGODB_PASSWORD="${MONGODB_PASSWORD}"
+          export JWT_SECRET="${JWT_SECRET}"
+          export NEXTAUTH_SECRET="${NEXTAUTH_SECRET}"
+          export NEXTAUTH_URL="${NEXTAUTH_URL}"
+          export CLOUDFRONT_KEY_PAIR_ID="${CLOUDFRONT_KEY_PAIR_ID}"
+          export CLOUDFRONT_PRIVATE_KEY="${CLOUDFRONT_PRIVATE_KEY}"
+          export CLOUDFRONT_URL="${CLOUDFRONT_URL}"
         - echo "MongoDB password exists: $MONGODB_PASSWORD"
-        # Auth
-        - JWT_SECRET=${JWT_SECRET}
-        - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-        - NEXTAUTH_URL=${NEXTAUTH_URL}
-        # CloudFront
-        - CLOUDFRONT_KEY_PAIR_ID=${CLOUDFRONT_KEY_PAIR_ID}
-        - CLOUDFRONT_PRIVATE_KEY=${CLOUDFRONT_PRIVATE_KEY}
-        - CLOUDFRONT_URL=${CLOUDFRONT_URL}
-        # Build command
         - npm run build
   artifacts:
     baseDirectory: .next

@@ -3,11 +3,10 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { connectDB } from '../../../config/db'
 import { User as DbUser } from '../../../models/User'
 import bcrypt from 'bcryptjs'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
-import { awsConfig } from '../../../config/aws'
+import { generateSignedUrl } from '../../../utils/cloudfront'
 import { JWT } from 'next-auth/jwt'
 
+// Type extensions
 declare module 'next-auth' {
   interface Session extends DefaultSession {
     user: {
@@ -32,14 +31,6 @@ declare module 'next-auth/jwt' {
   }
 }
 
-const s3Client = new S3Client({
-  region: awsConfig.region,
-  credentials: {
-    accessKeyId: awsConfig.accessKeyId,
-    secretAccessKey: awsConfig.secretAccessKey,
-  },
-})
-
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
@@ -51,35 +42,36 @@ export const authOptions: NextAuthOptions = {
       async authorize(credentials): Promise<User | null> {
         try {
           await connectDB()
+          
           const user = await DbUser.findOne({ email: credentials?.email })
           if (!user) throw new Error('Invalid credentials')
 
           const isValid = await bcrypt.compare(credentials?.password || '', user.password)
           if (!isValid) throw new Error('Invalid credentials')
 
+          // Generate CloudFront signed URL for profile image
           let signedImageUrl: string | null = null
           if (user.profileImage) {
-            const key = user.profileImage.split('/').pop()
-            if (key) {
-              const command = new GetObjectCommand({
-                Bucket: awsConfig.bucketName,
-                Key: `profile-images/${key}`
-              })
-              signedImageUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
-            }
+            const cleanKey = user.profileImage.replace(
+              'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', 
+              ''
+            )
+            signedImageUrl = await generateSignedUrl(cleanKey)
           }
 
           return {
             id: user._id.toString(),
             email: user.email,
             name: user.name,
-            image: signedImageUrl || null,  // Convert null to undefined if no image
+            image: signedImageUrl,
             role: user.role
           }
         } catch (error) {
+          console.error('Auth error:', error)
           return null
         }
-      }    })
+      }
+    })
   ],
   callbacks: {
     async jwt({ token, user }) {
@@ -94,7 +86,15 @@ export const authOptions: NextAuthOptions = {
       if (session.user) {
         session.user.id = token.id
         session.user.role = token.role
-        session.user.image = token.image
+        
+        // Regenerate signed URL if image exists
+        if (token.image) {
+          const cleanKey = token.image.replace(
+            'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', 
+            ''
+          )
+          session.user.image = await generateSignedUrl(cleanKey)
+        }
       }
       return session
     }
@@ -106,7 +106,7 @@ export const authOptions: NextAuthOptions = {
   },
   session: {
     strategy: 'jwt',
-    maxAge: 30 * 24 * 60 * 60,
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
   useSecureCookies: process.env.NODE_ENV === 'production',
   cookies: {

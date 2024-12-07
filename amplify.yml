@@ -6,7 +6,7 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - npm install
         - npm install -D cross-env
         - npm install -D tailwindcss postcss-import postcss autoprefixer @tailwindcss/forms
     build:
@@ -22,7 +22,7 @@ frontend:
         - export CLOUDFRONT_KEY_PAIR_ID="${CLOUDFRONT_KEY_PAIR_ID}"
         - export CLOUDFRONT_PRIVATE_KEY="${CLOUDFRONT_PRIVATE_KEY}"
         - export CLOUDFRONT_URL="${CLOUDFRONT_URL}"
-        - npm run build
+        - NODE_OPTIONS="--max_old_space_size=4096" npm run build
   artifacts:
     baseDirectory: .next
     files:

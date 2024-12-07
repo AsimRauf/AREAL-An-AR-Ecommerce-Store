@@ -11,20 +11,16 @@ frontend:
         - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
         - AWS_REGION=${REGION}
         - AWS_BUCKET_NAME=${BUCKET_NAME}
-        
         # MongoDB
         - MONGODB_PASSWORD=${MONGODB_PASSWORD}
-        
         # Auth
         - JWT_SECRET=${JWT_SECRET}
         - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
         - NEXTAUTH_URL=${NEXTAUTH_URL}
-        
         # CloudFront
         - CLOUDFRONT_KEY_PAIR_ID=${CLOUDFRONT_KEY_PAIR_ID}
         - CLOUDFRONT_PRIVATE_KEY=${CLOUDFRONT_PRIVATE_KEY}
         - CLOUDFRONT_URL=${CLOUDFRONT_URL}
-        
         # Build command
         - npm run build
   artifacts:
@@ -33,7 +29,8 @@ frontend:
       - '**/*'
   cache:
     paths:
-      - node_modules/**/*  customHeaders:
+      - node_modules/**/*
+  customHeaders:
     - pattern: '/api/*'
       headers:
         - key: 'Cache-Control'

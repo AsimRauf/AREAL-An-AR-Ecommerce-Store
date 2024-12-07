@@ -11,7 +11,7 @@ frontend:
         - npm install -D tailwindcss postcss-import postcss autoprefixer @tailwindcss/forms
     build:
       commands:
-         - export AWS_ACCESS_KEY_ID="${AACCESS_KEY_ID}"
+        - export AWS_ACCESS_KEY_ID="${AACCESS_KEY_ID}"
         - export AWS_SECRET_ACCESS_KEY="${SECRET_ACCESS_KEY}"
         - export AWS_REGION="${REGION}"
         - export AWS_BUCKET_NAME="${BUCKET_NAME}"

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../../config/db'
 import { Product } from '../../../models/Product'
 import { Seller } from '../../../models/Seller'
-import { generateSignedUrl } from '../../../utils/cloudfront'
+import { getEnvironmentSignedUrl } from '../../../utils/url-generator'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
@@ -27,13 +27,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       Promise.all(
         ((product as any).images || [])
           .filter(Boolean)
-          .map((key: string) => generateSignedUrl(key))
+          .map((key: string) => getEnvironmentSignedUrl(key))
       ),
       // Seller image
-      (product as any).seller?.profileImage ? 
-        generateSignedUrl((product as any).seller.profileImage) : null,
+      (product as any).seller?.profileImage ?
+        getEnvironmentSignedUrl((product as any).seller.profileImage) : null,
       // GLB model if exists
-      (product as any).glbModel ? generateSignedUrl((product as any).glbModel) : null
+      (product as any).glbModel ? getEnvironmentSignedUrl((product as any).glbModel) : null
     ])
 
     const productWithUrls = {

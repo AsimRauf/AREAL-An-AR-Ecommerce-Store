@@ -3,11 +3,10 @@ import mongoose from 'mongoose'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // Log MongoDB URI (hide password)
-    const uri = process.env.MONGODB_URI || ''
-    console.log('URI:', uri.replace(/:[^:@]*@/, ':****@'))
+    // Construct MongoDB URI properly
+    const uri = `mongodb+srv://asimraufbuzz:${process.env.MONGODB_PASSWORD}@cluster0.u7sas.mongodb.net/CommerceDB?retryWrites=true&w=majority`
     
-    // Test connection
+    console.log('Attempting connection...')
     const conn = await mongoose.connect(uri)
     
     res.status(200).json({
@@ -19,7 +18,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     console.error('Connection Error:', error)
     res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : 'An unknown error occurred'
+      error: error instanceof Error ? error.message : String(error),
+      envCheck: {
+        hasPassword: !!process.env.MONGODB_PASSWORD,
+        passwordLength: process.env.MONGODB_PASSWORD?.length || 0
+      }
     })
   }
 }

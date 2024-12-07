@@ -12,9 +12,21 @@ frontend:
         - "npm list tailwindcss postcss-import @tailwindcss/forms"
     build:
       commands:
-        - "echo \"Starting build process\""
-        - "NODE_ENV=production npm run build"
-        - "echo \"Build completed\""
+        - |
+          cat << EOF > .env.production
+          ACCESS_KEY_ID=${ACCESS_KEY_ID}
+          SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}
+          REGION=${REGION}
+          BUCKET_NAME=${BUCKET_NAME}
+          MONGODB_PASSWORD=${MONGODB_PASSWORD}
+          JWT_SECRET=${JWT_SECRET}
+          NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+          NEXTAUTH_URL=${NEXTAUTH_URL}
+          CLOUDFRONT_KEY_PAIR_ID=${CLOUDFRONT_KEY_PAIR_ID}
+          CLOUDFRONT_PRIVATE_KEY="${CLOUDFRONT_PRIVATE_KEY}"
+          CLOUDFRONT_URL=${CLOUDFRONT_URL}
+          EOF
+        - "npm run build"
   artifacts:
     baseDirectory: .next
     files:

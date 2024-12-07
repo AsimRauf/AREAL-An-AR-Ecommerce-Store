@@ -22,12 +22,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       products: products
     })
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Debug API Error:', error)
-    return res.status(500).json({
-      success: false,
-      error: error.message,
-      stack: error.stack
-    })
+    if (error instanceof Error) {
+      return res.status(500).json({
+        success: false,
+        error: error.message,
+        stack: error.stack
+      })
+    } else {
+      return res.status(500).json({
+        success: false,
+        error: 'An unknown error occurred'
+      })
+    }
   }
 }

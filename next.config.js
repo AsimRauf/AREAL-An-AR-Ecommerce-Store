@@ -3,7 +3,9 @@ const nextConfig = {
   output: 'standalone',
   reactStrictMode: true,
   images: {
-    domains: ['d3s4gao37ngkzb.cloudfront.net']
+    domains: ['d3s4gao37ngkzb.cloudfront.net',
+      'main.d1e1nwvnufs9wc.amplifyapp.com'
+    ]
   },
   webpack: (config) => {
     config.resolve = {

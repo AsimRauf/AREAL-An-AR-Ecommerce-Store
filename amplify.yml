@@ -7,8 +7,6 @@ frontend:
     preBuild:
       commands:
         - npm ci
-        - npm install postcss postcss-import@latest tailwindcss@latest autoprefixer@latest --save-dev
-        - npm install @tailwindcss/forms --save-dev
     build:
       commands:
         - |

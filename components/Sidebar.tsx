@@ -48,33 +48,65 @@ export default function Sidebar({ isMobile }: { isMobile: boolean }) {
                             />
                         </button>
                     )}
-
-                    <div className="px-4 py-2 h-full overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent hover:scrollbar-thumb-gray-400">
-                        <h2 className="text-xl font-bold text-indigo-600 mb-6 px-4">Categories</h2>
-                        <ul className="space-y-1">
-                            {categories.map((category, index) => (
-                                <li key={index}>
-                                    <Link
-                                        href={`/category/${category.toLowerCase()}`}
-                                        className="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-colors"
-                                        onClick={(e) => {
-                                            e.preventDefault()
-                                            const path = `/category/${category.toLowerCase()}`
-                                            router.push(path).then(() => {
-                                                if (isMobile) {
-                                                    toggleMobileSidebar()
-                                                }
-                                            })
-                                        }}
-                                    >
-                                        <span className="text-lg">{category}</span>
-                                        <span className="ml-auto text-gray-400">→</span>
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
+                        <div className="sidebar-content scrollbar-thin px-4 py-2 h-full overflow-y-auto">
+                            <h2 className="text-xl font-bold text-indigo-600 mb-6 px-4">Categories</h2>
+                            <ul className="space-y-1">
+                                {categories.map((category, index) => (
+                                    <li key={index}>
+                                        <Link
+                                            href={`/category/${category.toLowerCase()}`}
+                                            className="flex items-center px-4 py-3 text-gray-700 hover:bg-indigo-50 hover:text-indigo-600 rounded-xl transition-colors"
+                                            onClick={(e) => {
+                                                e.preventDefault()
+                                                const path = `/category/${category.toLowerCase()}`
+                                                router.push(path).then(() => {
+                                                    if (isMobile) {
+                                                        toggleMobileSidebar()
+                                                    }
+                                                })
+                                            }}
+                                        >
+                                            <span className="text-lg">{category}</span>
+                                            <span className="ml-auto text-gray-400">→</span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
                     </div>
-                </div>
+                    <style jsx global>{`
+                      /* Custom Scrollbar Styles */
+                      .scrollbar-thin {
+                        scrollbar-width: thin
+                        scrollbar-color: #6366f1 #e0e7ff
+                      }
+
+                      .scrollbar-thin::-webkit-scrollbar {
+                        width: 6px
+                      }
+
+                      .scrollbar-thin::-webkit-scrollbar-track {
+                        background: #e0e7ff
+                        border-radius: 8px
+                      }
+
+                      .scrollbar-thin::-webkit-scrollbar-thumb {
+                        background: #6366f1
+                        border-radius: 8px
+                        transition: all 0.3s ease
+                      }
+
+                      .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+                        background: #4f46e5
+                      }
+
+                      /* Add this class to your sidebar's scrollable div */
+                      .sidebar-content {
+                        height: calc(100vh - 4rem)
+                        overflow-y: auto
+                        padding-right: 4px; /* Prevent content shift */
+                      }
+                    `}</style>
             </aside>
 
             {isMobile && showMobileSidebar && (

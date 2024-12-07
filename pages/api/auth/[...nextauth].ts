@@ -3,8 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials'
 import { connectDB } from '../../../config/db'
 import { User as DbUser } from '../../../models/User'
 import bcrypt from 'bcryptjs'
-import { generateSignedUrl } from '../../../utils/cloudfront'
-import { JWT } from 'next-auth/jwt'
+import { getEnvironmentSignedUrl } from '../../../utils/url-generator'
 
 // Type extensions
 declare module 'next-auth' {
@@ -41,6 +40,7 @@ export const authOptions: NextAuthOptions = {
       },
       async authorize(credentials): Promise<User | null> {
         try {
+          console.log('Auth Environment:', process.env.NODE_ENV)
           await connectDB()
           
           const user = await DbUser.findOne({ email: credentials?.email })
@@ -49,14 +49,15 @@ export const authOptions: NextAuthOptions = {
           const isValid = await bcrypt.compare(credentials?.password || '', user.password)
           if (!isValid) throw new Error('Invalid credentials')
 
-          // Generate CloudFront signed URL for profile image
           let signedImageUrl: string | null = null
           if (user.profileImage) {
             const cleanKey = user.profileImage.replace(
-              'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', 
+              'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/',
               ''
             )
-            signedImageUrl = await generateSignedUrl(cleanKey)
+            console.log('Generating URL for profile image:', cleanKey)
+            signedImageUrl = await getEnvironmentSignedUrl(cleanKey)
+            console.log('Generated URL length:', signedImageUrl?.length)
           }
 
           return {
@@ -87,13 +88,16 @@ export const authOptions: NextAuthOptions = {
         session.user.id = token.id
         session.user.role = token.role
         
-        // Regenerate signed URL if image exists
         if (token.image) {
-          const cleanKey = token.image.replace(
-            'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', 
-            ''
-          )
-          session.user.image = await generateSignedUrl(cleanKey)
+          try {
+            // Clean the image URL and generate new signed URL
+            const cleanKey = token.image.replace(/^https?:\/\/[^\/]+\//, '')
+            const signedUrl = await getEnvironmentSignedUrl(cleanKey)
+            session.user.image = signedUrl || token.image
+          } catch (error) {
+            console.error('Failed to sign profile image URL:', error)
+            session.user.image = null
+          }
         }
       }
       return session

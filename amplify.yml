@@ -6,11 +6,8 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
-        - npm install postcss-import tailwindcss autoprefixer
-        - |
-          echo "Checking environment variables:"
-          echo "MongoDB Password exists: ${MONGODB_PASSWORD}"
+        - npm ci --legacy-peer-deps
+        - npm install -D postcss-import@latest tailwindcss@latest autoprefixer@latest
     build:
       commands:
         - |
@@ -25,7 +22,7 @@ frontend:
           export CLOUDFRONT_KEY_PAIR_ID="${CLOUDFRONT_KEY_PAIR_ID}"
           export CLOUDFRONT_PRIVATE_KEY="${CLOUDFRONT_PRIVATE_KEY}"
           export CLOUDFRONT_URL="${CLOUDFRONT_URL}"
-        - npm run build
+        - NODE_OPTIONS="--max_old_space_size=4096" npm run build
   artifacts:
     baseDirectory: .next
     files:

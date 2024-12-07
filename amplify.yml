@@ -6,8 +6,9 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci --legacy-peer-deps
-        - npm install -D postcss-import@latest tailwindcss@latest autoprefixer@latest
+        - npm ci
+        - npm install postcss postcss-import@latest tailwindcss@latest autoprefixer@latest --save-dev
+        - npm install @tailwindcss/forms --save-dev
     build:
       commands:
         - |

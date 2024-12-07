@@ -11,7 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     console.log('3. Attempting product fetch...')
     const products = await Product.find()
-      .limit(2) // Just get 2 products for testing
+      .limit(2)
       .lean()
     
     console.log('4. Products found:', products.length)
@@ -24,16 +24,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   } catch (error: unknown) {
     console.error('Debug API Error:', error)
+    // Send detailed error response
     if (error instanceof Error) {
       return res.status(500).json({
         success: false,
         error: error.message,
-        stack: error.stack
+        stack: error.stack,
+        timestamp: new Date().toISOString()
       })
     } else {
       return res.status(500).json({
         success: false,
-        error: 'An unknown error occurred'
+        error: 'An unknown error occurred',
+        timestamp: new Date().toISOString()
       })
     }
   }

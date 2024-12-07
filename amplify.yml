@@ -6,9 +6,11 @@ frontend:
   phases:
     preBuild:
       commands:
+        - rm -rf node_modules
+        - rm -f package-lock.json
         - npm install
-        - npm install cross-env
-        - npm install tailwindcss postcss-import postcss autoprefixer @tailwindcss/forms
+        - npm install postcss-import tailwindcss postcss autoprefixer @tailwindcss/forms --save-exact
+        - npm list postcss-import || true
     build:
       commands:
         - export AWS_ACCESS_KEY_ID="${AACCESS_KEY_ID}"
@@ -22,7 +24,7 @@ frontend:
         - export CLOUDFRONT_KEY_PAIR_ID="${CLOUDFRONT_KEY_PAIR_ID}"
         - export CLOUDFRONT_PRIVATE_KEY="${CLOUDFRONT_PRIVATE_KEY}"
         - export CLOUDFRONT_URL="${CLOUDFRONT_URL}"
-        - NODE_OPTIONS="--max_old_space_size=4096" npm run build
+        - npm run build
   artifacts:
     baseDirectory: .next
     files:

@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../../../config/db'
 import { Product } from '../../../../models/Product'
 import { Seller } from '../../../../models/Seller'
-import { generateSignedUrl } from '../../../../utils/cloudfront' // Use shared utility
+import { getEnvironmentSignedUrl } from '../../../../utils/url-generator'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { category } = req.query
@@ -51,21 +51,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const productsWithSignedUrls = await Promise.all(products.map(async product => {
       // Process product images in parallel
       const productImages = await Promise.all(
-        product.images.filter(Boolean).map(key => generateSignedUrl(key))
+        product.images.filter(Boolean).map(key => getEnvironmentSignedUrl(key))
       )
 
       // Process seller image if exists
       const sellerImageKey = product.seller?.profileImage?.replace(
-        'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', 
+        'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/',
         ''
       )
       
-      const sellerImage = sellerImageKey ? 
-        await generateSignedUrl(sellerImageKey) : null
+      const sellerImage = sellerImageKey ?
+        await getEnvironmentSignedUrl(sellerImageKey) : null
 
       return {
         ...product,
-        images: productImages.filter(Boolean), // Remove any null values
+        images: productImages.filter(Boolean),
         seller: product.seller ? {
           ...product.seller,
           profileImage: sellerImage

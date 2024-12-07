@@ -3,15 +3,23 @@ import { connectDB } from '../../config/db'
 import { Product } from '../../models/Product'
 import { Seller } from '../../models/Seller'
 import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
+import { formatPrivateKey } from '../../utils/cloudfront'
 
 const generateSignedUrl = (key: string) => {
-  const date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  return getSignedUrl({
-    url: `${process.env.CLOUDFRONT_URL}/${key}`,
-    keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
-    privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: date.toISOString()
-  })
+  try {
+    const formattedKey = formatPrivateKey(process.env.CLOUDFRONT_PRIVATE_KEY!)
+    console.log('Formatted key first line:', formattedKey.split('\n')[1]); // Debug log
+
+    return getSignedUrl({
+      url: `${process.env.CLOUDFRONT_URL}/${key}`,
+      keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
+      privateKey: formattedKey,
+      dateLessThan: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    })
+  } catch (error) {
+    console.error('URL signing error:', error)
+    return null
+  }
 }
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*')

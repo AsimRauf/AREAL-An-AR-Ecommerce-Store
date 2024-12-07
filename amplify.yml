@@ -8,6 +8,7 @@ frontend:
     build:
       commands:
         - npm run build
+      timeout: 20
   artifacts:
     baseDirectory: .next
     files:
@@ -15,4 +16,12 @@ frontend:
   cache:
     paths:
       - node_modules/**/*
-      - .next/cache/**/*
+  customHeaders:
+    - pattern: '/api/*'
+      headers:
+        - key: 'Cache-Control'
+          value: 'no-store'
+    - pattern: '/*'
+      headers:
+        - key: 'Strict-Transport-Security'
+          value: 'max-age=31536000; includeSubDomains'      - .next/cache/**/*

@@ -1,14 +1,34 @@
-export const formatPrivateKey = (privateKey: string) => {
-  // Convert PEM string to proper format
-  const pemHeader = '-----BEGIN PRIVATE KEY-----\n';
-  const pemFooter = '\n-----END PRIVATE KEY-----';
-  
-  // Remove existing headers/footers and whitespace
-  const keyContent = privateKey
-    .replace(/-----BEGIN PRIVATE KEY-----/, '')
-    .replace(/-----END PRIVATE KEY-----/, '')
-    .replace(/\s+/g, '');
-    
-  // Add proper PEM formatting
-  return `${pemHeader}${keyContent}${pemFooter}`;
+import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
+
+export const generateSignedUrl = (key: string) => {
+  try {
+    // Skip if no key provided
+    if (!key) {
+      console.log('No key provided');
+      return null;
+    }
+
+    // Clean the key
+    const cleanKey = key.replace(/^https?:\/\/[^\/]+\//, '');
+    console.log('Processing key:', cleanKey);
+
+    // Format private key
+    const privateKey = process.env.CLOUDFRONT_PRIVATE_KEY!
+      .replace(/\\n/g, '\n')
+      .replace(/"([^"]+)"/, '$1');
+
+    const signedUrl = getSignedUrl({
+      url: `${process.env.CLOUDFRONT_URL}/${cleanKey}`,
+      keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
+      privateKey,
+      dateLessThan: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString()
+    });
+
+    console.log('Generated URL for:', cleanKey);
+    return signedUrl;
+
+  } catch (error) {
+    console.error('URL signing error for key:', key, error);
+    return null;
+  }
 };

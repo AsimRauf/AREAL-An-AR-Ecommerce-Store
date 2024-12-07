@@ -2,16 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../../../config/db'
 import { Product } from '../../../../models/Product'
 import { Seller } from '../../../../models/Seller'
-import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
-
-const generateSignedUrl = (key: string) => {
-  return getSignedUrl({
-    url: `${process.env.CLOUDFRONT_URL}/${key}`,
-    keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
-    privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  })
-}
+import { generateSignedUrl } from '../../../../utils/cloudfront' // Use shared utility
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { category } = req.query
@@ -38,11 +29,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   try {
     await connectDB()
     
-    const totalProducts = await Product.countDocuments({ 
+    const totalProducts = await Product.countDocuments({
       category: { $regex: new RegExp(category as string, 'i') }
     })
 
-    const products = await Product.find({ 
+    const products = await Product.find({
       category: { $regex: new RegExp(category as string, 'i') }
     })
     .populate({
@@ -56,19 +47,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .limit(limit)
     .lean()
 
-    const productsWithSignedUrls = products.map(product => {
-      const sellerImageUrl = product.seller?.profileImage
-      const sellerImageKey = sellerImageUrl?.replace('https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', '')
+    // Generate signed URLs in parallel
+    const productsWithSignedUrls = await Promise.all(products.map(async product => {
+      // Process product images in parallel
+      const productImages = await Promise.all(
+        product.images.filter(Boolean).map(key => generateSignedUrl(key))
+      )
+
+      // Process seller image if exists
+      const sellerImageKey = product.seller?.profileImage?.replace(
+        'https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', 
+        ''
+      )
       
+      const sellerImage = sellerImageKey ? 
+        await generateSignedUrl(sellerImageKey) : null
+
       return {
         ...product,
-        images: product.images.map(key => generateSignedUrl(key)),
+        images: productImages.filter(Boolean), // Remove any null values
         seller: product.seller ? {
           ...product.seller,
-          profileImage: sellerImageKey ? generateSignedUrl(`${sellerImageKey}`) : null
+          profileImage: sellerImage
         } : null
       }
-    })
+    }))
 
     res.status(200).json({
       products: productsWithSignedUrls,
@@ -81,6 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
   } catch (error: unknown) {
+    console.error('Category API Error:', error)
     res.status(500).json({
       success: false,
       message: 'Error fetching category products',

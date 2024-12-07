@@ -2,13 +2,13 @@ import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
 
 export const generateSignedUrl = (key: string) => {
   try {
-    // Skip if no key provided
+    // Skip if no key
     if (!key) {
       console.log('No key provided');
       return null;
     }
 
-    // Clean the key
+    // Clean the key and log for debugging
     const cleanKey = key.replace(/^https?:\/\/[^\/]+\//, '');
     console.log('Processing key:', cleanKey);
 
@@ -16,6 +16,13 @@ export const generateSignedUrl = (key: string) => {
     const privateKey = process.env.CLOUDFRONT_PRIVATE_KEY!
       .replace(/\\n/g, '\n')
       .replace(/"([^"]+)"/, '$1');
+
+    // Log environment variables (without sensitive data)
+    console.log('Environment check:', {
+      hasCloudFrontUrl: !!process.env.CLOUDFRONT_URL,
+      hasKeyPairId: !!process.env.CLOUDFRONT_KEY_PAIR_ID,
+      hasPrivateKey: !!process.env.CLOUDFRONT_PRIVATE_KEY
+    });
 
     const signedUrl = getSignedUrl({
       url: `${process.env.CLOUDFRONT_URL}/${cleanKey}`,

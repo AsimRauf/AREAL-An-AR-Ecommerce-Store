@@ -1,8 +1,8 @@
-import { getSignedUrl } from '@aws-sdk/cloudfront-signer';
+import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
 
 export const generateSignedUrl = (key: string) => {
   try {
-    // Skip if no key
+    // Skip if no key provided
     if (!key) {
       console.log('No key provided');
       return null;
@@ -15,7 +15,9 @@ export const generateSignedUrl = (key: string) => {
     // Format private key
     const privateKey = process.env.CLOUDFRONT_PRIVATE_KEY!
       .replace(/\\n/g, '\n')
-      .replace(/"([^"]+)"/, '$1');
+      .replace(/^"|"$/g, '')
+      .replace('-----BEGIN PRIVATE KEY-----', '-----BEGIN PRIVATE KEY-----\n')
+      .replace('-----END PRIVATE KEY-----', '\n-----END PRIVATE KEY-----');
 
     // Log environment variables (without sensitive data)
     console.log('Environment check:', {

@@ -3,25 +3,35 @@ import mongoose from 'mongoose'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    // Construct MongoDB URI properly
-    const uri = `mongodb+srv://asimraufbuzz:${process.env.MONGODB_PASSWORD}@cluster0.u7sas.mongodb.net/CommerceDB?retryWrites=true&w=majority`
+    // Check if already connected
+    if (mongoose.connection.readyState === 1) {
+      return res.status(200).json({
+        success: true,
+        message: 'Already connected',
+        state: 'connected'
+      })
+    }
+
+    const uri = `mongodb+srv://asimraufbuzz:${process.env.MONGODB_PASSWORD}@cluster0.u7sas.mongodb.net/CommerceDB?retryWrites=true&w=majority&connectTimeoutMS=15000`
     
-    console.log('Attempting connection...')
-    const conn = await mongoose.connect(uri)
-    
-    res.status(200).json({
-      success: true,
-      connected: mongoose.connection.readyState === 1,
-      dbName: conn.connection.db?.databaseName ?? 'Unknown'
+    const conn = await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: 15000,
+      socketTimeoutMS: 15000
     })
+    
+    return res.status(200).json({
+      success: true,
+      state: mongoose.connection.readyState,
+      database: conn.connection.db?.databaseName || 'Unknown'
+    })
+
   } catch (error: unknown) {
-    console.error('Connection Error:', error)
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
-      error: error instanceof Error ? error.message : String(error),
-      envCheck: {
+      error: error instanceof Error ? error.message : 'An unknown error occurred',
+      env: {
         hasPassword: !!process.env.MONGODB_PASSWORD,
-        passwordLength: process.env.MONGODB_PASSWORD?.length || 0
+        mongoEnvs: Object.keys(process.env).filter(key => key.includes('MONGO'))
       }
     })
   }

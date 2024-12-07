@@ -1,16 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../config/db'
 import { Product } from '../../models/Product'
-import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
+import { getEnvironmentSignedUrl } from '../../utils/url-generator'
 
-const generateSignedUrl = (key: string) => {
-  return getSignedUrl({
-    url: `${process.env.CLOUDFRONT_URL}/${key}`,
-    keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
-    privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()
-  })
-}
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     return res.status(405).json({ message: 'Method not allowed' })
@@ -31,11 +23,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .limit(5)
     .lean()
 
-    // Generate signed URLs for images
-    const productsWithSignedUrls = products.map(product => ({
+    // Generate signed URLs for images using the new utility
+    const productsWithSignedUrls = await Promise.all(products.map(async product => ({
       ...product,
-      images: product.images.map(key => generateSignedUrl(key))
-    }))
+      images: await Promise.all(
+        product.images.map(key => getEnvironmentSignedUrl(key))
+      )
+    })))
 
     res.status(200).json(productsWithSignedUrls)
   } catch (error) {

@@ -1,17 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { connectDB } from '../../../config/db'
 import { Product } from '../../../models/Product'
-import { getSignedUrl } from '@aws-sdk/cloudfront-signer'
 import { Seller } from '../../../models/Seller'
-const generateSignedUrl = (key: string) => {
-  const date = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
-  return getSignedUrl({
-    url: `${process.env.CLOUDFRONT_URL}/${key}`,
-    keyPairId: process.env.CLOUDFRONT_KEY_PAIR_ID!,
-    privateKey: process.env.CLOUDFRONT_PRIVATE_KEY!,
-    dateLessThan: date.toISOString() // Convert Date to ISO string
-  })
-}
+import { generateSignedUrl } from '../../../utils/cloudfront'
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     await connectDB()
@@ -23,35 +15,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         model: Seller,
         select: 'name businessName profileImage'
       })
-      .lean() as any
+      .lean()
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found' })
     }
 
-    const sellerImageKey = product.seller?.profileImage?.replace('https://tanvircommerce-product-data.s3.ap-south-1.amazonaws.com/', '')
-
-    const [productImages, sellerImage] = await Promise.all([
-      Promise.all((product.images || []).map((key: string) => generateSignedUrl(key))),
-      sellerImageKey ? generateSignedUrl(sellerImageKey) : null
+    // Generate all signed URLs in parallel
+    const [productImages, sellerImage, glbModelUrl] = await Promise.all([
+      // Product images
+      Promise.all(
+        ((product as any).images || [])
+          .filter(Boolean)
+          .map((key: string) => generateSignedUrl(key))
+      ),
+      // Seller image
+      (product as any).seller?.profileImage ? 
+        generateSignedUrl((product as any).seller.profileImage) : null,
+      // GLB model if exists
+      (product as any).glbModel ? generateSignedUrl((product as any).glbModel) : null
     ])
 
     const productWithUrls = {
       ...product,
-      images: productImages,
-      glbModel: product.glbModel ? generateSignedUrl(product.glbModel) : null,
-      seller: product.seller ? {
-        ...product.seller,
+      images: productImages.filter(Boolean),
+      glbModel: glbModelUrl,
+      seller: (product as any).seller ? {
+        ...(product as any).seller,
         profileImage: sellerImage
       } : null
     }
 
     res.status(200).json(productWithUrls)
-  } catch (error: any) {
-    res.status(500).json({ 
-      success: false, 
+
+  } catch (error) {
+    console.error('Single Product API Error:', error)
+    res.status(500).json({
+      success: false,
       message: 'Error processing product',
-      error: error.message 
+      error: error instanceof Error ? error.message : String(error)
     })
   }
 }

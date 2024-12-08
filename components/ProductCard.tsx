@@ -42,7 +42,7 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <Link href={`/product/${product._id}`}>
-      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200">
+      <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-200 animate-fade-in">
         <div className="relative">
           <div className="relative w-full overflow-hidden bg-gray-50 h-[200px] sm:h-[280px] flex items-center justify-center border-b border-gray-200/60">
             <div className="relative w-[100%] h-[100%] rounded-lg ring-1 ring-gray-200/30">

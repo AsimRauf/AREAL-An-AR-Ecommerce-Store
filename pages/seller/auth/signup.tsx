@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FiUser, FiMail, FiLock, FiBriefcase, FiPhone, FiMapPin } from 'react-icons/fi'
+import { FiUser, FiMail, FiLock, FiBriefcase, FiPhone, FiMapPin,FiPlus } from 'react-icons/fi'
 import Image from 'next/image'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
@@ -98,63 +98,37 @@ export default function SellerSignup() {
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-white mb-6 sm:mb-8 md:mb-12 drop-shadow-lg">
             Create Your Seller Account
           </h1>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
-            {/* Profile Image Upload */}
-            <div className="flex justify-center mb-6 sm:mb-8">
-              <div className="relative w-32 h-32 sm:w-40 sm:h-40 group">
-                <div className="w-full h-full rounded-full overflow-hidden border-4 border-indigo-400/50 shadow-xl bg-white/10 backdrop-blur-sm">
-                  {imagePreview ? (
-                    <div className="relative w-full h-full">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
+              {/* Profile Image Upload */}
+              <div className="flex justify-center mb-6 sm:mb-8">
+                <div className="relative w-32 h-32 sm:w-40 sm:h-40">
+                  <div className={`w-full h-full rounded-full overflow-hidden border-4 border-indigo-400/50 shadow-xl ${!imagePreview ? 'bg-gradient-to-br from-indigo-500/50 to-purple-500/50' : ''}`}>
+                    {imagePreview ? (
                       <Image
                         src={imagePreview}
                         alt="Preview"
-                        layout="fill"
-                        objectFit="cover"
-                        className="rounded-full"
+                        fill
+                        className="rounded-full object-cover"
                       />
-                    </div>
-                  ) : (
-                    <div className="w-full h-full bg-gradient-to-br from-indigo-500/50 to-purple-500/50 flex items-center justify-center">
-                      <svg
-                        className="w-8 sm:w-12 h-8 sm:h-12 text-white/70"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M12 4v16m8-8H4"
-                        />
-                      </svg>
-                    </div>
-                  )}
-                </div>
-                <label className="absolute bottom-2 right-2 bg-gradient-to-r from-indigo-500 to-purple-500 p-2 sm:p-3 rounded-full cursor-pointer hover:scale-110 transition-transform duration-300 shadow-lg">
-                  <input
-                    type="file"
-                    className="hidden"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                  />
-                  <svg
-                    className="w-4 h-4 sm:w-5 sm:h-5 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M12 4v16m8-8H4"
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <FiUser className="w-12 h-12 text-white/70" />
+                      </div>
+                    )}
+                  </div>
+                
+                  {/* Upload Button */}
+                  <label className="absolute bottom-0 right-0 bg-gradient-to-r from-indigo-500 to-purple-500 p-2 rounded-full cursor-pointer shadow-lg hover:scale-110 transition-transform duration-300">
+                    <input
+                      type="file"
+                      className="hidden"
+                      accept="image/*"
+                      onChange={handleImageChange}
                     />
-                  </svg>
-                </label>
+                    <FiPlus className="w-5 h-5 text-white" />
+                  </label>
+                </div>
               </div>
-            </div>
               <div className="grid grid-cols-2 gap-4 sm:gap-6">
                 {/* Name and Email (single row) */}
                 <div className="col-span-1">

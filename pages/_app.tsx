@@ -3,6 +3,7 @@ import { SessionProvider } from 'next-auth/react'
 import { Toaster } from 'react-hot-toast'
 import type { AppProps } from 'next/app'
 import Navbar from '../components/Navbar'
+import Footer from '../components/Footer'
 import { useRouter } from 'next/router'
 import Head from 'next/head'
 import { createContext, useState, useEffect } from 'react'
@@ -30,10 +31,13 @@ function Layout({ children, isSellerRoute, isSellerAuth, isUserAuth }: {
   const { showDesktopSidebar } = useSidebar()
 
   return (
-    <div className={`transition-all duration-300 ${
+    <div className={`min-h-screen flex flex-col transition-all duration-300 ${
       !isSellerRoute && !isSellerAuth && !isUserAuth && showDesktopSidebar ? 'lg:ml-64' : 'ml-0'
     }`}>
-      {children}
+      <div className="flex-grow">
+        {children}
+      </div>
+      {!isSellerRoute && !isSellerAuth && !isUserAuth && <Footer />}
     </div>
   )
 }

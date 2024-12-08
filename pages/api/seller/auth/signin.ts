@@ -2,18 +2,8 @@ import { connectDB } from '../../../../config/db'
 import { Seller } from '../../../../models/Seller'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { S3Client, GetObjectCommand } from '@aws-sdk/client-s3'
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner'
-import { awsConfig } from '../../../../config/aws'
+import { getEnvironmentSignedUrl } from '../../../../utils/url-generator'
 import type { NextApiRequest, NextApiResponse } from 'next'
-
-const s3Client = new S3Client({
-  region: awsConfig.region,
-  credentials: {
-    accessKeyId: awsConfig.accessKeyId,
-    secretAccessKey: awsConfig.secretAccessKey,
-  },
-})
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
@@ -37,11 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     let signedImageUrl: string | null = null
     if (seller.profileImage) {
       const key = seller.profileImage.split('/').pop()
-      const command = new GetObjectCommand({
-        Bucket: awsConfig.bucketName,
-        Key: `seller-profiles/${key}`
-      })
-      signedImageUrl = await getSignedUrl(s3Client, command, { expiresIn: 3600 })
+      signedImageUrl = getEnvironmentSignedUrl(`seller-profiles/${key}`)
     }
 
     const token = jwt.sign(

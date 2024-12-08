@@ -8,9 +8,7 @@
   [Live Demo](https://main.d1e1nwvnufs9wc.amplifyapp.com/) · [Report Bug](https://github.com/AsimRauf/AsimRauf/AREAL-An-AR-Ecommerce-Store) · [Request Feature](https://github.com/AsimRauf/AsimRauf/AREAL-An-AR-Ecommerce-Store)
 </div>
 
----
 
-[Rest of your README content...]
 
 
 
@@ -129,7 +127,7 @@ Open your browser and visit:
 ## 🌐 Deployment
 
 The application is deployed on **Amazon Amplify**:  
-[Visit AREAL](#https://main.d1e1nwvnufs9wc.amplifyapp.com/)
+
 
 ## 🤝 Contributing
 
@@ -147,7 +145,7 @@ See the [LICENSE](LICENSE) file for details.
 ## 👥 Team
 
 **Asim Rauf** - Full Stack Developer  
-[GitHub](#) | [LinkedIn](#)
+[GitHub](https://github.com/AsimRauf) | [LinkedIn](https://www.linkedin.com/in/asim-rauf-43111223b/)
 
 ## 🌟 Acknowledgments
 

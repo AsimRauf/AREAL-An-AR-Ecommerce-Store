@@ -1,36 +1,155 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AREAL - Pakistan's First AR-Powered Multivendor Marketplace
 
-## Getting Started
+AREAL revolutionizes online shopping in Pakistan by introducing Augmented Reality (AR) visualization, allowing customers to experience products in their space before purchase. Our platform connects local sellers with tech-savvy buyers through immersive AR technology.
 
-First, run the development server:
+![AREAL Banner](![image](https://github.com/user-attachments/assets/eddfc900-23e3-4918-a43a-f1bba62dd087)
+)
 
+## ✨ Key Features
+
+### For Shoppers
+- View products in AR before buying
+- Explore diverse product categories
+- Secure checkout process (to be implemented)
+- Real-time order tracking
+- Wishlist favorite items
+- Mobile-responsive design
+
+### For Sellers
+- Easy store setup
+- AR model upload support
+- Real-time analytics
+- Order management
+- Customer insights
+- Inventory tracking
+
+## 🛠️ Tech Stack
+
+- **Frontend**: Next.js, React, TypeScript
+- **Styling**: TailwindCSS
+- **Backend**: Node.js, Express
+- **Database**: MongoDB, Mongoose
+- **Storage**: AWS S3, CloudFront
+- **Authentication**: NextAuth.js
+- **AR Technology**: Model Viewer
+- **State Management**: React Context
+- **Payment**: Stripe Integration
+
+## 🚀 Getting Started
+
+1. **Clone Repository**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/AsimRauf/AREAL-An-AR-Ecommerce-Store
+cd AREAL-An-AR-Ecommerce-Store
+
+# AREAL - AR Marketplace Documentation
+
+## 🛠️ Installation
+
+### Install Dependencies
+```bash
+npm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Environment Variables Guide
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Required Environment Variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the root directory:
 
-## Learn More
+### Database Configuration
+```env
+#### MongoDB Connection
+DATABASE_URL=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/<database>
+MONGODB_NAME=your_database_name
 
-To learn more about Next.js, take a look at the following resources:
+#### AWS Configurations
+##### AWS Credentials
+ACCESS_KEY_ID=your_aws_access_key
+SECRET_ACCESS_KEY=your_aws_secret_key
+REGION=your_aws_region
+BUCKET_NAME=your_s3_bucket_name
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### CloudFront
+CLOUDFRONT_URL=your_cloudfront_distribution_url
+CLOUDFRONT_KEY_PAIR_ID=your_cloudfront_key_pair_id
+CLOUDFRONT_PRIVATE_KEY=your_cloudfront_private_key
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret
 
-## Deploy on Vercel
+### JWT
+JWT_SECRET=your_jwt_secret
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+
+### Apply Changes
+Start the development server:
+```bash
+npm run dev
+```
+
+### Visit Localhost
+Open your browser and visit:  
+[http://localhost:3000](http://localhost:3000)
+
+## 📱 Features Overview
+
+### AR Shopping Experience
+- Real-time product visualization
+- 360° product view
+- Size and placement testing
+- Multi-angle product preview
+
+### Seller Dashboard
+- Sales analytics
+- Order management
+- Product uploads
+- AR model management
+- Customer insights
+
+### User Features
+- Secure authentication
+- Order history
+- AR product preview
+- Wishlist management
+- Profile customization
+
+## 🌐 Deployment
+
+The application is deployed on **Amazon Amplify**:  
+[Visit AREAL](#https://main.d1e1nwvnufs9wc.amplifyapp.com/)
+
+## 🤝 Contributing
+
+1. **Fork the repository**  
+2. **Create a feature branch**  
+3. **Commit changes**  
+4. **Push to branch**  
+5. **Open a pull request**
+
+## 📄 License
+
+This project is licensed under the **MIT License**.  
+See the [LICENSE](LICENSE) file for details.
+
+## 👥 Team
+
+**Asim Rauf** - Full Stack Developer  
+[GitHub](#) | [LinkedIn](#)
+
+## 🌟 Acknowledgments
+
+- First AR-powered marketplace in Pakistan  
+- Supporting local businesses through technology  
+- Revolutionizing online shopping experience  
+- Empowering sellers with AR capabilities  
+
+## 📞 Support
+
+For support, email at: **asimraufbuzz@gmail.com**
+
+*Made with ❤️ in Pakistan*
+

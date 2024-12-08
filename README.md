@@ -1,9 +1,18 @@
-# AREAL - Pakistan's First AR-Powered Multivendor Marketplace
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/eddfc900-23e3-4918-a43a-f1bba62dd087" alt="AREAL Banner" width="100%" />
+  
+  # AREAL - Pakistan's First AR-Powered Marketplace
+  
+  Experience products in augmented reality before you buy. Explore our multivendor marketplace featuring furniture, decor, electronics, and more.
 
-AREAL revolutionizes online shopping in Pakistan by introducing Augmented Reality (AR) visualization, allowing customers to experience products in their space before purchase. Our platform connects local sellers with tech-savvy buyers through immersive AR technology.
+  [Live Demo](https://main.d1e1nwvnufs9wc.amplifyapp.com/) · [Report Bug](https://github.com/AsimRauf/AsimRauf/AREAL-An-AR-Ecommerce-Store) · [Request Feature](https://github.com/AsimRauf/AsimRauf/AREAL-An-AR-Ecommerce-Store)
+</div>
 
-![AREAL Banner](![image](https://github.com/user-attachments/assets/eddfc900-23e3-4918-a43a-f1bba62dd087)
-)
+---
+
+[Rest of your README content...]
+
+
 
 ## ✨ Key Features
 
@@ -33,7 +42,7 @@ AREAL revolutionizes online shopping in Pakistan by introducing Augmented Realit
 - **Authentication**: NextAuth.js
 - **AR Technology**: Model Viewer
 - **State Management**: React Context
-- **Payment**: Stripe Integration
+- **Payment**: Stripe Integration (to be implemented)
 
 ## 🚀 Getting Started
 
